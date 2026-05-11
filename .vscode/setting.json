@@ -1,0 +1,33 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [88],
+
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+
+    "[html]": {
+        "editor.tabSize": 2
+    },
+
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/*.pyc": true,
+        "**/.ruff_cache": true
+    },
+
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+
+    "files.associations": {
+        "**/templates/**/*.html": "django-html",
+        ".env.example": "dotenv"
+    }
+}

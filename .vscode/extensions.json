@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+        "batisteo.vscode-django",
+        "bradlc.vscode-tailwindcss",
+        "eamodio.gitlens",
+        "qwtel.sqlite-viewer",
+        "mikestead.dotenv",
+        "humao.rest-client"
+    ]
+}
