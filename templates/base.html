@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Game Scoring{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a1a2e',
+                        secondary: '#16213e',
+                        accent: '#e94560',
+                        surface: '#0f3460',
+                    }
+                }
+            }
+        }
+    </script>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-primary text-gray-100 min-h-screen flex flex-col">
+
+    <nav class="sticky top-0 z-50 bg-secondary border-b border-gray-700 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="/" class="text-accent text-xl font-bold hover:text-red-400 transition-colors">
+                🎮 Game Scoring
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="/" class="text-gray-300 hover:text-accent transition-colors text-sm font-medium">
+                    Games
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="#" class="text-gray-300 hover:text-accent transition-colors text-sm font-medium">
+                        My Library
+                    </a>
+                    <span class="text-gray-300 text-sm font-medium">
+                        {{ user.username }}
+                    </span>
+                    <form method="post" action="/accounts/logout/" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-accent hover:bg-red-700 text-white text-sm font-medium px-3 py-1.5 rounded transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="/accounts/login/" class="text-gray-300 hover:text-accent transition-colors text-sm font-medium">
+                        Login
+                    </a>
+                    <a href="/accounts/register/" class="bg-accent hover:bg-red-700 text-white text-sm font-medium px-3 py-1.5 rounded transition-colors">
+                        Register
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 pt-4 w-full">
+            {% for message in messages %}
+                <div class="mb-2 px-4 py-3 rounded
+                    {% if message.tags == 'success' %}bg-green-800 text-green-100
+                    {% elif message.tags == 'error' %}bg-red-800 text-red-100
+                    {% elif message.tags == 'warning' %}bg-yellow-800 text-yellow-100
+                    {% else %}bg-blue-800 text-blue-100{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="flex-1 w-full">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="bg-secondary border-t border-gray-700 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-gray-400 text-sm">
+            <p>© {% now "Y" %} Game Scoring. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

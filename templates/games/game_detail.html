@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+ 
+{% block title %}{{ game.title }} - Game Scoring{% endblock %}
+ 
+{% block content %}
+ 
+    <!--
+        HERO SEKCJA - górna część strony z okładką i podstawowymi info
+        flex gap-8 = elementy obok siebie z odstępem
+        flex-col md:flex-row = kolumna na telefonach, rząd na większych ekranach
+    -->
+    <div class="flex flex-col md:flex-row gap-8 mb-12">
+ 
+        <!--
+            OKŁADKA GRY
+            w-full md:w-64 = pełna szerokość na telefonie, 256px na większych
+            flex-shrink-0 = nie kurczy się gdy brakuje miejsca
+        -->
+        <div class="w-full md:w-64 flex-shrink-0">
+            <div class="aspect-[3/4] bg-gray-700 rounded-lg overflow-hidden">
+                {% if game.cover_image_url %}
+                    <img src="{{ game.cover_image_url }}"
+                         alt="{{ game.title }}"
+                         class="w-full h-full object-cover">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <span class="text-8xl">🎮</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+ 
+        <!--
+            INFORMACJE O GRZE - prawa strona
+            flex-1 = zajmuje całą dostępną przestrzeń
+        -->
+        <div class="flex-1">
+ 
+            <!--
+                TYTUŁ
+                text-4xl font-bold = duży pogrubiony tytuł
+                mb-2 = mały margines dolny
+            -->
+            <h1 class="text-4xl font-bold text-white mb-2">{{ game.title }}</h1>
+ 
+            <!--
+                DEVELOPER I PUBLISHER
+                text-gray-400 = szary kolor
+                mb-4 = margines dolny
+            -->
+            {% if game.developer %}
+                <p class="text-gray-400 mb-1">
+                    <span class="text-gray-500">Developer:</span>
+                    {{ game.developer }}
+                </p>
+            {% endif %}
+ 
+            {% if game.publisher %}
+                <p class="text-gray-400 mb-4">
+                    <span class="text-gray-500">Publisher:</span>
+                    {{ game.publisher }}
+                </p>
+            {% endif %}
+ 
+            <!--
+                TAGI - gatunek, data wydania, ocena
+                flex flex-wrap gap-2 = owijające się tagi z odstępami
+                mb-6 = margines dolny
+            -->
+            <div class="flex flex-wrap gap-2 mb-6">
+ 
+                {% if game.genre %}
+                    <span class="bg-surface text-blue-300 text-sm px-3 py-1 rounded-full">
+                        {{ game.genre }}
+                    </span>
+                {% endif %}
+ 
+                {% if game.release_date %}
+                    <span class="bg-gray-700 text-gray-300 text-sm px-3 py-1 rounded-full">
+                        📅 {{ game.release_date|date:"Y" }}
+                    </span>
+                {% endif %}
+ 
+                {% if game.age_rating %}
+                    <span class="bg-gray-700 text-gray-300 text-sm px-3 py-1 rounded-full">
+                        {{ game.age_rating }}
+                    </span>
+                {% endif %}
+ 
+            </div>
+ 
+            <!--
+                OCENA METACRITIC
+                Duży, kolorowy blok z oceną
+            -->
+            {% if game.metacritic_score %}
+                <div class="flex items-center gap-3 mb-6">
+                    <!--
+                        Kolor oceny zależy od wartości:
+                        >= 75 = zielony, >= 50 = żółty, < 50 = czerwony
+                    -->
+                    <div class="w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold
+                        {% if game.metacritic_score >= 75 %}bg-green-700 text-green-100
+                        {% elif game.metacritic_score >= 50 %}bg-yellow-700 text-yellow-100
+                        {% else %}bg-red-700 text-red-100{% endif %}">
+                        {{ game.metacritic_score }}
+                    </div>
+                    <div>
+                        <p class="text-white font-medium">Metacritic Score</p>
+                        <p class="text-gray-400 text-sm">
+                            {% if game.metacritic_score >= 75 %}Universal Acclaim
+                            {% elif game.metacritic_score >= 50 %}Mixed Reviews
+                            {% else %}Negative Reviews{% endif %}
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+ 
+            <!--
+                JĘZYKI
+            -->
+            {% if game.languages %}
+                <p class="text-gray-400 text-sm mb-4">
+                    <span class="text-gray-500">Languages:</span>
+                    {{ game.languages }}
+                </p>
+            {% endif %}
+ 
+            <!--
+                STEAM ID - link do Steam Store
+            -->
+            {% if game.steam_app_id %}
+                <a href="https://store.steampowered.com/app/{{ game.steam_app_id }}/"
+                   target="_blank"
+                   class="inline-flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded transition-colors">
+                    🎮 View on Steam
+                </a>
+            {% endif %}
+ 
+        </div>
+    </div>
+ 
+    <!--
+        OPIS GRY
+        prose = dobry padding i typography dla długich tekstów
+    -->
+    {% if game.description %}
+        <div class="bg-secondary rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">About</h2>
+            <!--
+                linebreaksbr = Django filter który zamienia \n na <br>
+                Czyli zwykły tekst wyświetla się z podziałami linii
+            -->
+            <p class="text-gray-300 leading-relaxed">{{ game.description|linebreaksbr }}</p>
+        </div>
+    {% endif %}
+ 
+    <!--
+        SEKCJA RECENZJI
+    -->
+    <div class="mb-8">
+ 
+        <h2 class="text-2xl font-bold text-white mb-6">Reviews</h2>
+ 
+        <!--
+            LISTA RECENZJI
+            game.reviews.all = pobiera wszystkie recenzje tej gry
+            Działa dzięki related_name="reviews" w modelu Review
+        -->
+        {% if game.reviews.all %}
+ 
+            <div class="space-y-4">
+                <!--
+                    space-y-4 = odstępy między elementami w pionie
+                -->
+                {% for review in game.reviews.all %}
+ 
+                    <div class="bg-secondary rounded-lg p-6">
+ 
+                        <!--
+                            NAGŁÓWEK RECENZJI
+                            flex justify-between = autor po lewej, ocena po prawej
+                        -->
+                        <div class="flex justify-between items-start mb-3">
+ 
+                            <div>
+                                <!--
+                                    AUTOR
+                                    review.user.username = nazwa usera który napisał recenzję
+                                -->
+                                <p class="font-semibold text-white">
+                                    {{ review.user.username }}
+                                </p>
+                                <!--
+                                    DATA RECENZJI
+                                    review.created_at|date:"d M Y" = np. "12 May 2026"
+                                -->
+                                <p class="text-gray-500 text-sm">
+                                    {{ review.created_at|date:"d M Y" }}
+                                </p>
+                            </div>
+ 
+                            <!--
+                                OCENA
+                                Duży kolorowy badge z oceną
+                            -->
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl font-bold
+                                    {% if review.rating >= 8 %}text-green-400
+                                    {% elif review.rating >= 5 %}text-yellow-400
+                                    {% else %}text-red-400{% endif %}">
+                                    {{ review.rating }}
+                                </span>
+                                <span class="text-gray-500">/10</span>
+                            </div>
+ 
+                        </div>
+ 
+                        <!--
+                            TEKST RECENZJI
+                            Tylko jeśli user napisał coś (review_text może być pusty)
+                        -->
+                        {% if review.review_text %}
+                            <p class="text-gray-300 leading-relaxed">
+                                {{ review.review_text }}
+                            </p>
+                        {% endif %}
+ 
+                        <!--
+                            CZY POLECA
+                        -->
+                        {% if review.is_recommended %}
+                            <p class="text-green-400 text-sm mt-3">✅ Recommended</p>
+                        {% else %}
+                            <p class="text-red-400 text-sm mt-3">❌ Not Recommended</p>
+                        {% endif %}
+ 
+                    </div>
+ 
+                {% endfor %}
+            </div>
+ 
+        {% else %}
+            <!--
+                BRAK RECENZJI
+            -->
+            <div class="bg-secondary rounded-lg p-8 text-center">
+                <p class="text-gray-400">No reviews yet. Be the first to review this game!</p>
+            </div>
+        {% endif %}
+ 
+    </div>
+ 
+    <!--
+        LINK POWROTU
+        Wróć do listy gier
+    -->
+    <a href="{% url 'game_list' %}"
+       class="inline-flex items-center gap-2 text-gray-400 hover:text-accent transition-colors">
+        ← Back to Games
+    </a>
+ 
+{% endblock %}
+ 
