@@ -1,6 +1,4 @@
 from django.contrib import admin
-
-# Register your models here.
 from django.contrib.auth.admin import UserAdmin
 
 from accounts.models import User
@@ -60,6 +58,20 @@ class CustomUserAdmin(UserAdmin):
                 "fields": (
                     "created_at",
                     "updated_at",
+                )
+            },
+        ),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (
+            "Profile Information",
+            {
+                "fields": (
+                    "email",
+                    "bio",
+                    "avatar_url",
+                    "steam_id",
+                    "is_public",
                 )
             },
         ),
