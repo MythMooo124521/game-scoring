@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+ 
+{% block title %}Register - Game Scoring{% endblock %}
+ 
+{% block content %}
+ 
+<div class="max-w-md mx-auto">
+ 
+    <div class="bg-secondary rounded-lg p-8">
+ 
+        <h1 class="text-2xl font-bold text-white mb-6 text-center">Create Account</h1>
+ 
+        <form method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+ 
+            {% if form.errors %}
+                <div class="bg-red-800 text-red-100 px-4 py-3 rounded mb-4">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+ 
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2">Username</label>
+                <input type="text"
+                       name="username"
+                       class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                       placeholder="Choose a username"
+                       value="{{ form.username.value|default:'' }}">
+            </div>
+ 
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2">Email</label>
+                <input type="email"
+                       name="email"
+                       class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                       placeholder="Enter your email"
+                       value="{{ form.email.value|default:'' }}">
+            </div>
+ 
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2">Password</label>
+                <input type="password"
+                       name="password1"
+                       class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                       placeholder="Choose a password">
+            </div>
+ 
+            <div class="mb-6">
+                <label class="block text-gray-400 text-sm mb-2">Confirm Password</label>
+                <input type="password"
+                       name="password2"
+                       class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                       placeholder="Repeat your password">
+            </div>
+ 
+            <button type="submit"
+                    class="w-full bg-accent hover:bg-red-700 text-white font-medium py-2 rounded transition-colors">
+                Create Account
+            </button>
+ 
+        </form>
+ 
+        <div class="mt-6 text-center">
+            <p class="text-gray-400 text-sm">
+                Already have an account?
+                <a href="{% url 'account_login' %}" class="text-accent hover:underline">Login</a>
+            </p>
+        </div>
+ 
+    </div>
+</div>
+ 
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+ 
+{% block title %}Login - Game Scoring{% endblock %}
+ 
+{% block content %}
+ 
+<div class="max-w-md mx-auto">
+ 
+    <div class="bg-secondary rounded-lg p-8">
+ 
+        <h1 class="text-2xl font-bold text-white mb-6 text-center">Login</h1>
+ 
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+ 
+            {% if form.errors %}
+                <div class="bg-red-800 text-red-100 px-4 py-3 rounded mb-4">
+                    Invalid username or password.
+                </div>
+            {% endif %}
+ 
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2">Username or Email</label>
+                <input type="text"
+                       name="login"
+                       class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                       placeholder="Enter your username or email">
+            </div>
+ 
+            <div class="mb-6">
+                <label class="block text-gray-400 text-sm mb-2">Password</label>
+                <input type="password"
+                       name="password"
+                       class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                       placeholder="Enter your password">
+            </div>
+ 
+            <button type="submit"
+                    class="w-full bg-accent hover:bg-red-700 text-white font-medium py-2 rounded transition-colors">
+                Login
+            </button>
+ 
+        </form>
+ 
+        <div class="mt-6 text-center">
+            <p class="text-gray-400 text-sm">
+                Don't have an account?
+                <a href="{% url 'account_signup' %}" class="text-accent hover:underline">Register</a>
+            </p>
+        </div>
+ 
+        <div class="mt-4 border-t border-gray-700 pt-4">
+            <a href="{% url 'steam_login' %}"
+               class="w-full flex items-center justify-center gap-3 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 rounded transition-colors">
+                🎮 Login with Steam
+            </a>
+        </div>
+ 
+    </div>
+</div>
+ 
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+ 
+{% block title %}Review {{ game.title }} - Game Scoring{% endblock %}
+ 
+{% block content %}
+ 
+<div class="max-w-2xl mx-auto">
+ 
+    <div class="mb-6">
+        <a href="{% url 'game_detail' slug=game.slug %}"
+           class="text-gray-400 hover:text-accent transition-colors">
+            ← Back to {{ game.title }}
+        </a>
+    </div>
+ 
+    <div class="bg-secondary rounded-lg p-8">
+ 
+        <div class="flex items-center gap-4 mb-6">
+            {% if game.cover_image_url %}
+                <img src="{{ game.cover_image_url }}"
+                     alt="{{ game.title }}"
+                     class="w-16 h-16 object-cover rounded">
+            {% endif %}
+            <div>
+                <h1 class="text-2xl font-bold text-white">Write a Review</h1>
+                <p class="text-gray-400">{{ game.title }}</p>
+            </div>
+        </div>
+ 
+        {% if form.errors %}
+            <div class="bg-red-800 text-red-100 px-4 py-3 rounded mb-4">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+ 
+        <form method="post">
+            {% csrf_token %}
+ 
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2">
+                    Rating (1-10)
+                </label>
+                <input type="number"
+                       name="rating"
+                       min="1"
+                       max="10"
+                       value="{{ form.rating.value|default:'' }}"
+                       class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                       placeholder="Enter rating from 1 to 10">
+            </div>
+ 
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2">
+                    Review (optional)
+                </label>
+                <textarea name="review_text"
+                          rows="4"
+                          class="w-full bg-primary border border-gray-600 text-white rounded px-3 py-2 focus:outline-none focus:border-accent"
+                          placeholder="Write your review here...">{{ form.review_text.value|default:'' }}</textarea>
+            </div>
+ 
+            <div class="mb-6">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox"
+                           name="is_recommended"
+                           {% if form.is_recommended.value %}checked{% endif %}
+                           class="w-4 h-4 accent-accent">
+                    <span class="text-gray-300">I recommend this game</span>
+                </label>
+            </div>
+ 
+            <button type="submit"
+                    class="w-full bg-accent hover:bg-red-700 text-white font-medium py-2 rounded transition-colors">
+                Submit Review
+            </button>
+ 
+        </form>
+    </div>
+</div>
+ 
+{% endblock %}

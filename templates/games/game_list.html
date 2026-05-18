@@ -18,12 +18,15 @@
                 <a href="{% url 'game_detail' slug=game.slug %}" class="block flex-1">
                     <div class="aspect-[3/4] bg-gray-700 overflow-hidden">
                         {% if game.cover_image_url %}
-                            <img src="{{ game.cover_image_url }}"
-                                 alt="{{ game.title }}"
-                                 class="w-full h-full object-cover">
+                                <img src="{{ game.cover_image_url }}"
+                                alt="{{ game.title }}"
+                                class="w-full h-full object-cover"
+                                onerror="if(this.dataset.fallback){this.src=this.dataset.fallback; this.dataset.fallback='';}else{this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><span class=\'text-6xl\'>🎮</span></div>';}"
+                                data-fallback="https://cdn.cloudflare.steamstatic.com/steam/apps/{{ game.steam_app_id }}/header.jpg">
                         {% else %}
-                            <div class="w-full h-full flex items-center justify-center">
-                                <span class="text-6xl">🎮</span>
+                            <div class="w-full h-full flex flex-col items-center justify-center p-4 bg-gray-800">
+                                <span class="text-4xl mb-2">🎮</span>
+                                <p class="text-gray-400 text-xs text-center line-clamp-3">{{ game.title }}</p>
                             </div>
                         {% endif %}
                     </div>

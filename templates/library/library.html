@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+ 
+{% block title %}My Library - Game Scoring{% endblock %}
+ 
+{% block content %}
+ 
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-white">My Library</h1>
+        <p class="text-gray-400 mt-1">{{ entries|length }} games</p>
+    </div>
+    <a href="{% url 'import_steam_library' %}"
+       class="bg-accent hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded transition-colors">
+        Import Steam
+    </a>
+</div>
+ 
+{% if entries %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for entry in entries %}
+            <div class="bg-secondary rounded-lg overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-200 flex flex-col">
+ 
+                <a href="{% url 'game_detail' slug=entry.game.slug %}" class="block">
+                    <div class="aspect-[16/9] bg-gray-700 overflow-hidden">
+                        {% if entry.game.cover_image_url %}
+                            <img src="{{ entry.game.cover_image_url }}"
+                                 alt="{{ entry.game.title }}"
+                                 class="w-full h-full object-cover"
+                                 onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><span class=\'text-4xl\'>🎮</span></div>'">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="text-4xl">🎮</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+ 
+                <div class="p-4 flex-1 flex flex-col">
+                    <h2 class="font-semibold text-white line-clamp-2 mb-2">
+                        <a href="{% url 'game_detail' slug=entry.game.slug %}"
+                           class="hover:text-accent transition-colors">
+                            {{ entry.game.title }}
+                        </a>
+                    </h2>
+ 
+                    <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-700">
+ 
+                        <!-- STATUS -->
+                        <span class="text-xs px-2 py-1 rounded
+                            {% if entry.status == 'playing' %}bg-green-800 text-green-200
+                            {% elif entry.status == 'completed' %}bg-blue-800 text-blue-200
+                            {% elif entry.status == 'dropped' %}bg-red-800 text-red-200
+                            {% else %}bg-gray-700 text-gray-300{% endif %}">
+                            {{ entry.get_status_display }}
+                        </span>
+ 
+                        <!-- CZAS GRANIA -->
+                        {% if entry.hours_played %}
+                            <span class="text-xs text-gray-400">
+                                {{ entry.hours_played }}h
+                            </span>
+                        {% endif %}
+ 
+                    </div>
+                </div>
+ 
+            </div>
+        {% endfor %}
+    </div>
+ 
+{% else %}
+    <div class="text-center py-20">
+        <span class="text-8xl">🎮</span>
+        <h2 class="text-2xl font-bold text-white mt-6 mb-2">Your library is empty</h2>
+        <p class="text-gray-400 mb-6">Import your Steam library to get started.</p>
+        <a href="{% url 'import_steam_library' %}"
+           class="bg-accent hover:bg-red-700 text-white font-medium px-6 py-3 rounded transition-colors">
+            Import Steam Library
+        </a>
+    </div>
+{% endif %}
+ 
+{% endblock %}
